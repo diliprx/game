@@ -369,7 +369,7 @@
             document.getElementById('aiScore').textContent = aiScore;
             
             // Add warning blink on 10th attempt
-            if (attempts === 10) {
+            if (attempts === 20) {
                 document.getElementById('attempts').classList.add('warning-blink');
             }
         }
@@ -422,7 +422,7 @@
             document.getElementById('resultMessage').textContent = 'AI Wins! Try again...';
             
             // Check if this is the 11th attempt
-            if (attempts === 11) {
+            if (attempts === 20) {
                 setTimeout(() => {
                     showFlag();
                 }, 1000);
@@ -445,7 +445,7 @@
                 'Lost again! You\'re getting close to something...'
             ];
             
-            if (attempts <= 10) {
+            if (attempts <= 19) {
                 const messageIndex = Math.min(attempts - 1, loseMessages.length - 1);
                 document.getElementById('resultMessage').textContent = loseMessages[messageIndex];
             }
