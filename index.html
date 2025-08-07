@@ -422,7 +422,7 @@
             document.getElementById('resultMessage').textContent = 'AI Wins! Try again...';
             
             // Check if this is the 11th attempt
-            if (attempts === 20) {
+            if (attempts === 15) {
                 setTimeout(() => {
                     showFlag();
                 }, 1000);
@@ -436,16 +436,22 @@
                 'unalle mudiyathendru uure sollum nambathe poi!👍',
                 'Valkai Oru Vattam Athula Jaikriravan Thopan Thokravan Jaipan💪🏻',
                 'Thothukute irukiye da...🤭',
+                'M1k3y ku chocolate kudutha flag kedaikum😉',
+                'Avan kitta solli niruthungalen da...vanthute irukan..😂',
                 'You lost The battle not the war...🎯',
                 'come on kabila you can do it!🔥',
                 'Ennaikkum vidaamuyarchii...⚡',
                 '**tha kashtam da...😅',
                 'vathiyare na kandupudikuran vathiyare...🪽',
                 'crypto ve solve pandra aalavuku therama irukalam athukagalam misc solve pannida mudiyathu...😂',
+                'Mendum Mendum ahhh😑','
+                'Ithellam namba kudumbathuku thevai ah gopi...😄',
+                'Yengaaaaaaa thothuthinga......😊',
+                'Mannare ithu vantha pathai 😂',
                 'Lost again! You\'re getting close to something...'
             ];
             
-            if (attempts <= 19) {
+            if (attempts <= 14) {
                 const messageIndex = Math.min(attempts - 1, loseMessages.length - 1);
                 document.getElementById('resultMessage').textContent = loseMessages[messageIndex];
             }
