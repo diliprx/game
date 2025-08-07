@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unbeatable Reflexes - CTF Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 65, 0.3),
+                inset 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .challenge-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .challenge-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            margin-bottom: 0.5rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 107, 107, 0.3); }
+        }
+
+        .challenge-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1rem;
+        }
+
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 255, 65, 0.1);
+            border-radius: 10px;
+            border: 1px solid #00ff41;
+        }
+
+        .score-section {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .attempts-counter {
+            color: #ff6b6b;
+        }
+
+        .warning-blink {
+            animation: blink 0.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .game-area {
+            margin-bottom: 2rem;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .choice-btn {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 1rem;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: #00ff41;
+            min-width: 80px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 255, 65, 0.3);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .choice-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .choice-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 65, 0.2);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .choice-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .battle-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            min-height: 120px;
+        }
+
+        .player-choice, .ai-choice {
+            flex: 1;
+            text-align: center;
+        }
+
+        .choice-display {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vs-divider {
+            flex: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin: 0 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .result-message {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-thinking {
+            animation: thinking 0.5s ease-in-out infinite;
+            color: #ffd93d;
+        }
+
+        @keyframes thinking {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .flag-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #00ff41, #4ecdc4);
+            background-size: 300% 300%;
+            animation: rainbow 0.5s ease-in-out infinite;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .flag-text {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #000;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        .flag-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            letter-spacing: 2px;
+        }
+
+        .easter-egg-hint {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        @media (max-width: 500px) {
+            .choices {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .choice-btn {
+                min-width: 60px;
+                min-height: 60px;
+                font-size: 2rem;
+                padding: 0.5rem;
+            }
+            
+            .battle-area {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="challenge-header">
+            <h1 class="challenge-title">🎯 UNBEATABLE REFLEXES</h1>
+            <p class="challenge-subtitle">Challenge the AI that never loses... or does it?</p>
+        </div>
+
+        <div class="scoreboard">
+            <div class="score-section">
+                <div class="score-label">YOUR WINS</div>
+                <div class="score-value" id="playerScore">0</div>
+            </div>
+            <div class="score-section">
+                <div class="score-label">ATTEMPTS</div>
+                <div class="score-value attempts-counter" id="attempts">0</div>
+            </div>
+            <div class="score-section">
+                <div class="score-label">AI WINS</div>
+                <div class="score-value" id="aiScore">0</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="choices">
+                <button class="choice-btn" onclick="playGame('rock')" id="rockBtn">🪨</button>
+                <button class="choice-btn" onclick="playGame('paper')" id="paperBtn">📄</button>
+                <button class="choice-btn" onclick="playGame('scissors')" id="scissorsBtn">✂️</button>
+            </div>
+
+            <div class="battle-area">
+                <div class="player-choice">
+                    <div class="choice-display" id="playerDisplay">?</div>
+                    <div>YOU</div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="ai-choice">
+                    <div class="choice-display" id="aiDisplay">🤖</div>
+                    <div>AI</div>
+                </div>
+            </div>
+
+            <div class="result-message" id="resultMessage">Choose your weapon!</div>
+        </div>
+
+        <div class="easter-egg-hint">
+            💡 Tip: Persistence is key... sometimes frustration reveals secrets.
+        </div>
+    </div>
+
+    <div class="flag-container" id="flagContainer">
+        <div class="flag-text">🎉 FLAG DISCOVERED! 🎉</div>
+        <div class="flag-value" id="flagValue">hackoff{j31ch174_m4r4}</div>
+    </div>
+
+    <script>
+        let attempts = 0;
+        let playerScore = 0;
+        let aiScore = 0;
+        let gameDisabled = false;
+        let flagShown = false;
+
+        const choices = {
+            rock: '🪨',
+            paper: '📄',
+            scissors: '✂️'
+        };
+
+        const winningMoves = {
+            rock: 'paper',
+            paper: 'scissors',
+            scissors: 'rock'
+        };
+
+        function updateScore() {
+            document.getElementById('attempts').textContent = attempts;
+            document.getElementById('playerScore').textContent = playerScore;
+            document.getElementById('aiScore').textContent = aiScore;
+            
+            // Add warning blink on 10th attempt
+            if (attempts === 10) {
+                document.getElementById('attempts').classList.add('warning-blink');
+            }
+        }
+
+        function disableGame() {
+            gameDisabled = true;
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.classList.add('disabled');
+            });
+        }
+
+        function showFlag() {
+            if (flagShown) return;
+            
+            flagShown = true;
+            const flagContainer = document.getElementById('flagContainer');
+            flagContainer.style.display = 'block';
+            
+            // Hide flag after 5 seconds
+            setTimeout(() => {
+                flagContainer.style.display = 'none';
+                disableGame();
+                document.getElementById('resultMessage').textContent = 'Game Over - Flag Captured! 🎯';
+            }, 3000);
+        }
+
+        async function playGame(playerChoice) {
+            if (gameDisabled) return;
+            
+            attempts++;
+            updateScore();
+            
+            // Show player choice immediately
+            document.getElementById('playerDisplay').textContent = choices[playerChoice];
+            document.getElementById('resultMessage').textContent = 'AI is thinking...';
+            document.getElementById('resultMessage').classList.add('ai-thinking');
+            document.getElementById('aiDisplay').textContent = '🤔';
+            
+            // AI "thinks" for dramatic effect
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // AI always chooses the winning move
+            const aiChoice = winningMoves[playerChoice];
+            document.getElementById('aiDisplay').textContent = choices[aiChoice];
+            document.getElementById('resultMessage').classList.remove('ai-thinking');
+            
+            // AI always wins
+            aiScore++;
+            updateScore();
+            document.getElementById('resultMessage').textContent = 'AI Wins! Try again...';
+            
+            // Check if this is the 11th attempt
+            if (attempts === 11) {
+                setTimeout(() => {
+                    showFlag();
+                }, 1000);
+            }
+            
+            // Add some variety to the losing messages
+            const loseMessages = [
+                'Arambikalama...😁',
+                'Mudiyala nu solla koodathu… mudiyum varaikkum try pannanum!🙌',
+                'Firstuh yaru varan nu mukiyam illa last la yaru first varan nu mukiyam🦁',
+                'unalle mudiyathendru uure sollum nambathe poi!👍',
+                'Valkai Oru Vattam Athula Jaikriravan Thopan Thokravan Jaipan💪🏻',
+                'Thothukute irukiye da...🤭',
+                'You lost The battle not the war...🎯',
+                'come on kabila you can do it!🔥',
+                'Ennaikkum vidaamuyarchii...⚡',
+                '**tha kashtam da...😅',
+                'vathiyare na kandupudikuran vathiyare...🪽',
+                'crypto ve solve pandra aalavuku therama irukalam athukagalam misc solve pannida mudiyathu...😂',
+                'Lost again! You\'re getting close to something...'
+            ];
+            
+            if (attempts <= 10) {
+                const messageIndex = Math.min(attempts - 1, loseMessages.length - 1);
+                document.getElementById('resultMessage').textContent = loseMessages[messageIndex];
+            }
+        }
+
+        // Add some click sound effects (optional)
+        document.querySelectorAll('.choice-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                if (!gameDisabled) {
+                    btn.style.transform = 'translateY(-3px) scale(1.05)';
+                }
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                if (!gameDisabled) {
+                    btn.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+
+        // Initialize game
+        updateScore();
+    </script>
+</body>
+</html>
